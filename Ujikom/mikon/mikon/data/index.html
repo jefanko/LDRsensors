@@ -1,288 +1,26 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Agroteknologi</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard Kontrol Agroteknologi</title>
+
+    <link rel="stylesheet" href="style.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2e7d32;
-            --primary-dark: #1b5e20;
-            --primary-light: #4caf50;
-            --secondary: #f9a825;
-            --dark: #2c3e50;
-            --light: #ecf0f1;
-            --danger: #e74c3c;
-            --success: #27ae60;
-            --warning: #f39c12;
-            --info: #3498db;
-        }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #1a2f3f, #0d1b26);
-            color: var(--light);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(to right, #4CAF50, #8BC34A);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 10px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #bdc3c7;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-
-        .card {
-            background: rgba(30, 40, 56, 0.7);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .card-header i {
-            font-size: 2rem;
-            margin-right: 15px;
-            color: var(--primary-light);
-        }
-
-        .card-header h2 {
-            font-size: 1.8rem;
-            color: var(--light);
-        }
-
-        .gauge-container {
-            position: relative;
-            height: 220px;
-            margin: 0 auto;
-        }
-
-        .gauge-value {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: white;
-        }
-
-        .gauge-label {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 1.2rem;
-            color: #bdc3c7;
-        }
-
-        .control-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .relay-control {
-            background: rgba(44, 62, 80, 0.6);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            min-width: 180px;
-            transition: all 0.3s ease;
-        }
-
-        .relay-control.active {
-            background: rgba(39, 174, 96, 0.2);
-            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
-        }
-
-        .relay-control h3 {
-            font-size: 1.4rem;
-            margin-bottom: 15px;
-            color: var(--light);
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 70px;
-            height: 34px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #2c3e50;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: #ecf0f1;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--success);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(36px);
-        }
-
-        .status {
-            display: block;
-            margin-top: 15px;
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-
-        .status.off {
-            color: var(--danger);
-        }
-
-        .status.on {
-            color: var(--success);
-        }
-
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 12px;
-            padding: 15px 25px;
-            margin-top: 40px;
-            font-size: 1rem;
-            align-items: center;
-        }
-
-        .connection-status {
-            display: flex;
-            align-items: center;
-        }
-
-        .connection-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 10px;
-            background-color: var(--danger);
-        }
-
-        .connection-dot.connected {
-            background-color: var(--success);
-            box-shadow: 0 0 10px var(--success);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .logo i {
-            margin-right: 10px;
-            color: var(--primary-light);
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .control-panel {
-                flex-direction: column;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
+
     <div class="container">
         <header>
-            <h1><i class="fas fa-seedling"></i> DASHBOARD AGROTEKNOLOGI</h1>
-            <p class="subtitle">Arya Justin Jefanko</p>
+            <h1><i class="fas fa-seedling"></i> Dashboard Kontrol Agroteknologi</h1>
         </header>
 
         <div class="dashboard-grid">
-            <!-- Panel Suhu -->
             <div class="card">
                 <div class="card-header">
                     <i class="fas fa-thermometer-half"></i>
@@ -292,10 +30,9 @@
                     <canvas id="temp-gauge"></canvas>
                     <div class="gauge-value" id="temp-value">0.0°C</div>
                 </div>
-                <div class="gauge-label">Rentang Ideal: 20°C - 30°C</div>
+                <div class="gauge-label">Ideal: 20°C - 30°C</div>
             </div>
 
-            <!-- Panel Kelembaban Udara -->
             <div class="card">
                 <div class="card-header">
                     <i class="fas fa-tint"></i>
@@ -305,40 +42,37 @@
                     <canvas id="hum-gauge"></canvas>
                     <div class="gauge-value" id="hum-value">0.0%</div>
                 </div>
-                <div class="gauge-label">Rentang Ideal: 40% - 70%</div>
+                <div class="gauge-label">Ideal: 40% - 70%</div>
             </div>
 
-            <!-- Panel Kelembaban Tanah -->
             <div class="card">
                 <div class="card-header">
-                    <i class="fas fa-seedling"></i>
+                    <i class="fas fa-ruler-vertical"></i>
                     <h2>Kelembaban Tanah</h2>
                 </div>
                 <div class="gauge-container">
                     <canvas id="soil-gauge"></canvas>
                     <div class="gauge-value" id="soil-value">0%</div>
                 </div>
-                <div class="gauge-label">Rentang Ideal: 30% - 70%</div>
+                <div class="gauge-label">Ideal: 30% - 70%</div>
             </div>
         </div>
 
-        <!-- Panel Kontrol -->
-        <div class="card" style="margin-top: 30px;">
+        <div class="card">
             <div class="card-header">
                 <i class="fas fa-sliders-h"></i>
                 <h2>Kontrol Perangkat</h2>
             </div>
-            
             <div class="control-panel">
                 <div class="relay-control" id="relay1-control">
-                    <h3><i class="fas fa-fan"></i> Fan</h3>
+                    <h3><i class="fas fa-fan"></i> Kipas Angin</h3>
                     <label class="switch">
                         <input type="checkbox" id="relay1">
                         <span class="slider"></span>
                     </label>
                     <span class="status off" id="relay1-status">OFF</span>
                 </div>
-                
+
                 <div class="relay-control" id="relay2-control">
                     <h3><i class="fas fa-faucet"></i> Pompa Air</h3>
                     <label class="switch">
@@ -350,190 +84,22 @@
             </div>
         </div>
 
-        <!-- Status Bar -->
         <div class="status-bar">
             <div class="connection-status">
                 <div class="connection-dot" id="connection-dot"></div>
-                <span id="connection-status">Menghubungkan ke sistem...</span>
+                <span id="connection-status">Menghubungkan...</span>
             </div>
-            <div class="last-update">
-                <i class="fas fa-sync-alt"></i> <span id="last-update">Terakhir Diperbarui: -</span>
+            <div class="last-update" id="last-update">
+                <i class="fas fa-sync-alt"></i> Terakhir Diperbarui: -
             </div>
             <div class="logo">
-                <i class="fas fa-microchip"></i> AgroTech
+                <i class="fas fa-microchip"></i> AgroTech System
             </div>
         </div>
     </div>
 
-    <script>
-        // Inisialisasi grafik gauge
-        const tempGauge = new Chart(document.getElementById('temp-gauge'), {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [0, 100],
-                    backgroundColor: ['#4CAF50', 'rgba(44, 62, 80, 0.3)'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                rotation: 1 * Math.PI,
-                circumference: 1 * Math.PI,
-                cutout: '85%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
-                }
-            }
-        });
+    <script src="script.js"></script>
 
-        const humGauge = new Chart(document.getElementById('hum-gauge'), {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [0, 100],
-                    backgroundColor: ['#3498db', 'rgba(44, 62, 80, 0.3)'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                rotation: 1 * Math.PI,
-                circumference: 1 * Math.PI,
-                cutout: '85%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
-                }
-            }
-        });
-
-        const soilGauge = new Chart(document.getElementById('soil-gauge'), {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [0, 100],
-                    backgroundColor: ['#f39c12', 'rgba(44, 62, 80, 0.3)'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                rotation: 1 * Math.PI,
-                circumference: 1 * Math.PI,
-                cutout: '85%',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
-                }
-            }
-        });
-
-        // Fungsi untuk memperbarui gauge
-        function updateGauge(gauge, value, maxValue) {
-            gauge.data.datasets[0].data = [value, maxValue - value];
-            gauge.update();
-        }
-
-        // Variabel status relay
-        let relay1State = false;
-        let relay2State = false;
-
-        // Fungsi untuk mengambil data sensor dari ESP32
-        function fetchSensorData() {
-            fetch('/data')
-                .then(response => response.json())
-                .then(data => {
-                    // Perbarui gauge dan nilai
-                    updateGauge(tempGauge, data.temperature, 50);
-                    updateGauge(humGauge, data.humidity, 100);
-                    updateGauge(soilGauge, data.soil, 100);
-                    
-                    document.getElementById('temp-value').textContent = data.temperature.toFixed(1) + '°C';
-                    document.getElementById('hum-value').textContent = data.humidity.toFixed(1) + '%';
-                    document.getElementById('soil-value').textContent = data.soil + '%';
-                    
-                    // Perbarui status relay jika ada perubahan dari luar
-                    if (relay1State !== data.relay1) {
-                        relay1State = data.relay1;
-                        document.getElementById('relay1').checked = relay1State;
-                    }
-                    
-                    if (relay2State !== data.relay2) {
-                        relay2State = data.relay2;
-                        document.getElementById('relay2').checked = relay2State;
-                    }
-                    
-                    const relay1Status = document.getElementById('relay1-status');
-                    const relay2Status = document.getElementById('relay2-status');
-                    
-                    relay1Status.textContent = relay1State ? "ON" : "OFF";
-                    relay1Status.className = relay1State ? "status on" : "status off";
-                    relay2Status.textContent = relay2State ? "ON" : "OFF";
-                    relay2Status.className = relay2State ? "status on" : "status off";
-                    
-                    // Perbarui tampilan kontrol relay
-                    const relay1Control = document.getElementById('relay1-control');
-                    const relay2Control = document.getElementById('relay2-control');
-                    
-                    relay1Control.classList.toggle('active', relay1State);
-                    relay2Control.classList.toggle('active', relay2State);
-                    
-                    // Perbarui status koneksi
-                    const connectionDot = document.getElementById('connection-dot');
-                    const connectionStatus = document.getElementById('connection-status');
-                    
-                    connectionDot.className = "connection-dot connected";
-                    connectionStatus.textContent = "Terhubung ke sistem";
-                    
-                    // Perbarui waktu terakhir update
-                    const now = new Date();
-                    document.getElementById('last-update').innerHTML = 
-                        `<i class="fas fa-sync-alt"></i> Terakhir Diperbarui: ${now.toLocaleTimeString()}`;
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    const connectionDot = document.getElementById('connection-dot');
-                    const connectionStatus = document.getElementById('connection-status');
-                    
-                    connectionDot.className = "connection-dot";
-                    connectionStatus.textContent = "Koneksi terputut, mencoba kembali...";
-                    connectionStatus.style.color = "#e74c3c";
-                });
-        }
-
-        // Fungsi untuk mengontrol relay
-        function controlRelay(relayNum, state) {
-            fetch(`/update?relay=${relayNum}&state=${state ? 1 : 0}`)
-                .then(response => response.text())
-                .then(data => {
-                    console.log(`Relay ${relayNum} set to ${state}: ${data}`);
-                })
-                .catch(error => {
-                    console.error(`Error controlling relay ${relayNum}:`, error);
-                });
-        }
-
-        // Event listener untuk toggle relay
-        document.getElementById('relay1').addEventListener('change', function() {
-            relay1State = this.checked;
-            controlRelay(1, relay1State);
-        });
-
-        document.getElementById('relay2').addEventListener('change', function() {
-            relay2State = this.checked;
-            controlRelay(2, relay2State);
-        });
-
-        // Perbarui data setiap 3 detik
-        setInterval(fetchSensorData, 3000);
-
-        // Ambil data pertama kali
-        fetchSensorData();
-    </script>
 </body>
+
 </html>

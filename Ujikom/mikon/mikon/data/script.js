@@ -1,72 +1,166 @@
-const DATA_REFRESH_INTERVAL = 5000;
-const SENSOR_DATA_ENDPOINT = "/data";
-const RELAY_CONTROL_ENDPOINT = "/update";
+// Inisialisasi grafik gauge menggunakan Chart.js
+const tempGauge = new Chart(document.getElementById('temp-gauge'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [0, 50], // Nilai awal, max 50 untuk suhu
+            backgroundColor: ['#f39c12', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutout: '80%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+        }
+    }
+});
 
-const temperatureElement = document.getElementById('temperature');
-const humidityElement = document.getElementById('humidity');
-const soilElement = document.getElementById('soil');
-const relay1Toggle = document.getElementById('relay1');
-const relay2Toggle = document.getElementById('relay2');
-const relay1Status = document.getElementById('relay1-status');
-const relay2Status = document.getElementById('relay2-status');
-const connectionStatus = document.getElementById('connection-status');
-const lastUpdateElement = document.getElementById('last-update');
+const humGauge = new Chart(document.getElementById('hum-gauge'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [0, 100], // Nilai awal, max 100
+            backgroundColor: ['#3498db', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutout: '80%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+        }
+    }
+});
 
-function updateSensorData() {
-    fetch(SENSOR_DATA_ENDPOINT)
-        .then(response => response.json())
+const soilGauge = new Chart(document.getElementById('soil-gauge'), {
+    type: 'doughnut',
+    data: {
+        datasets: [{
+            data: [0, 100], // Nilai awal, max 100
+            backgroundColor: ['#27ae60', '#eeeeee'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        cutout: '80%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+        }
+    }
+});
+
+// Fungsi untuk memperbarui data pada gauge
+function updateGauge(gauge, value, maxValue) {
+    gauge.data.datasets[0].data[0] = value;
+    gauge.data.datasets[0].data[1] = maxValue - value;
+    gauge.update();
+}
+
+// Variabel untuk menyimpan status kontrol relay
+let relay1State = false;
+let relay2State = false;
+
+// Fungsi untuk mengambil data sensor dari server (ESP32)
+function fetchSensorData() {
+    fetch('/data')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            temperatureElement.textContent = data.temperature.toFixed(1);
-            humidityElement.textContent = data.humidity.toFixed(1);
-            soilElement.textContent = data.soil;
-            
-            relay1Toggle.checked = data.relay1;
-            relay2Toggle.checked = data.relay2;
-            relay1Status.textContent = data.relay1 ? "ON" : "OFF";
-            relay2Status.textContent = data.relay2 ? "ON" : "OFF";
-            
-            connectionStatus.textContent = "Terhubung";
-            connectionStatus.style.color = "green";
-            
+            // Perbarui nilai dan tampilan gauge
+            updateGauge(tempGauge, data.temperature, 50);
+            updateGauge(humGauge, data.humidity, 100);
+            updateGauge(soilGauge, data.soil, 100);
+
+            document.getElementById('temp-value').textContent = data.temperature.toFixed(1) + '°C';
+            document.getElementById('hum-value').textContent = data.humidity.toFixed(1) + '%';
+            document.getElementById('soil-value').textContent = data.soil + '%';
+
+            // Sinkronisasi status tombol relay dengan data dari server
+            if (relay1State !== data.relay1) {
+                relay1State = data.relay1;
+                document.getElementById('relay1').checked = relay1State;
+            }
+
+            if (relay2State !== data.relay2) {
+                relay2State = data.relay2;
+                document.getElementById('relay2').checked = relay2State;
+            }
+
+            // Perbarui teks status (ON/OFF) dan tampilan kartu kontrol
+            const relay1Status = document.getElementById('relay1-status');
+            relay1Status.textContent = relay1State ? "ON" : "OFF";
+            relay1Status.className = relay1State ? "status on" : "status off";
+            document.getElementById('relay1-control').classList.toggle('active', relay1State);
+
+            const relay2Status = document.getElementById('relay2-status');
+            relay2Status.textContent = relay2State ? "ON" : "OFF";
+            relay2Status.className = relay2State ? "status on" : "status off";
+            document.getElementById('relay2-control').classList.toggle('active', relay2State);
+
+            // Perbarui status koneksi menjadi "Terhubung"
+            document.getElementById('connection-dot').classList.add("connected");
+            document.getElementById('connection-status').textContent = "Terhubung";
+
+            // Perbarui waktu terakhir update
             const now = new Date();
-            lastUpdateElement.textContent = `Terakhir Diperbarui: ${now.toLocaleTimeString()}`;
+            document.getElementById('last-update').innerHTML =
+                `<i class="fas fa-sync-alt"></i> Terakhir Diperbarui: ${now.toLocaleTimeString('id-ID')}`;
         })
         .catch(error => {
-            console.error('Error:', error);
-            connectionStatus.textContent = "Koneksi Terputus";
-            connectionStatus.style.color = "red";
+            console.error('Gagal mengambil data:', error);
+            // Ubah status koneksi menjadi "Terputus" jika terjadi error
+            document.getElementById('connection-dot').classList.remove("connected");
+            document.getElementById('connection-status').textContent = "Koneksi Terputus";
         });
 }
 
+// Fungsi untuk mengirim perintah kontrol relay ke server
 function controlRelay(relayNum, state) {
-    fetch(`${RELAY_CONTROL_ENDPOINT}?relay=${relayNum}&state=${state ? 1 : 0}`)
+    fetch(`/update?relay=${relayNum}&state=${state ? 1 : 0}`)
         .then(response => response.text())
         .then(data => {
-            console.log(`Relay ${relayNum} set to ${state}: ${data}`);
+            console.log(`Relay ${relayNum} diatur ke ${state}: ${data}`);
+            // Panggil fetchSensorData lagi untuk sinkronisasi cepat
+            fetchSensorData();
         })
         .catch(error => {
-            console.error(`Error controlling relay ${relayNum}:`, error);
-            if (relayNum === 1) {
-                relay1Toggle.checked = !state;
-                relay1Status.textContent = state ? "OFF" : "ON";
-            } else {
-                relay2Toggle.checked = !state;
-                relay2Status.textContent = state ? "OFF" : "ON";
-            }
+            console.error(`Gagal mengontrol relay ${relayNum}:`, error);
         });
 }
 
-relay1Toggle.addEventListener('change', () => {
-    const state = relay1Toggle.checked;
-    relay1Status.textContent = state ? "ON" : "OFF";
-    controlRelay(1, state);
+// Event listener untuk setiap tombol relay
+document.getElementById('relay1').addEventListener('change', function () {
+    relay1State = this.checked;
+    controlRelay(1, relay1State);
 });
 
-relay2Toggle.addEventListener('change', () => {
-    const state = relay2Toggle.checked;
-    relay2Status.textContent = state ? "ON" : "OFF";
-    controlRelay(2, state);
+document.getElementById('relay2').addEventListener('change', function () {
+    relay2State = this.checked;
+    controlRelay(2, relay2State);
 });
 
-setInterval(updateSensorData, DATA_REFRESH_INTERVAL);
-window.addEventListener('DOMContentLoaded', updateSensorData);
+// Memanggil fungsi fetchSensorData secara berkala (setiap 3 detik)
+setInterval(fetchSensorData, 3000);
+
+// Memanggil fetchSensorData saat halaman pertama kali dimuat
+document.addEventListener('DOMContentLoaded', fetchSensorData);

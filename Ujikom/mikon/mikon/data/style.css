@@ -1,113 +1,159 @@
+/* Definisi Variabel Warna */
 :root {
     --primary: #2e7d32;
-    --primary-dark: #005005;
-    --primary-light: #60ad5e;
-    --secondary: #f9a825;
-    --dark: #333;
-    --light: #f5f5f5;
-    --danger: #c62828;
-    --success: #2e7d32;
+    --primary-light: #4caf50;
+    --dark: #333333;
+    --light: #f4f7f6;
+    --grey: #dddddd;
+    --danger: #e74c3c;
+    --success: #27ae60;
+    --info: #3498db;
+    --warning: #f39c12;
+    --shadow: rgba(0, 0, 0, 0.1);
 }
 
+/* Reset dan Pengaturan Dasar Body */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
+    background-color: var(--light);
     color: var(--dark);
-    line-height: 1.6;
     padding: 20px;
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
-h1, h2, h3 {
-    color: var(--primary-dark);
-    margin-bottom: 20px;
+/* Header */
+header {
     text-align: center;
+    padding: 20px 0;
+    margin-bottom: 30px;
 }
 
 h1 {
     font-size: 2.5rem;
-    margin-top: 20px;
-}
-
-/* Panel Sensor */
-.sensor-panel {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    margin: 30px 0;
-}
-
-.sensor-card {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 20px;
-    text-align: center;
-    width: 30%;
-    min-width: 250px;
-    margin: 10px;
-    transition: transform 0.3s;
-}
-
-.sensor-card:hover {
-    transform: translateY(-5px);
-}
-
-.sensor-card i {
-    font-size: 3rem;
     color: var(--primary);
-    margin-bottom: 15px;
 }
 
-.sensor-card h3 {
-    margin: 10px 0;
+h1 i {
+    margin-right: 10px;
+}
+
+/* Layout Grid Dashboard */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+/* Styling Kartu */
+.card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 5px 15px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px var(--shadow);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--grey);
+}
+
+.card-header i {
+    font-size: 1.8rem;
+    margin-right: 15px;
+    color: var(--primary-light);
+    width: 40px;
+    text-align: center;
+}
+
+.card-header h2 {
+    font-size: 1.6rem;
     color: var(--dark);
 }
 
-.sensor-card div {
-    font-size: 2.5rem;
+/* Gauge dan Label */
+.gauge-container {
+    position: relative;
+    height: 180px;
+    margin: 10px auto;
+}
+
+.gauge-value {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2.2rem;
     font-weight: bold;
-    color: var(--primary-dark);
-    display: inline-block;
+    color: var(--dark);
 }
 
-.unit {
-    font-size: 1.5rem;
-    color: var(--dark);
-    margin-left: 5px;
+.gauge-label {
+    text-align: center;
+    margin-top: 5px;
+    font-size: 1rem;
+    color: #666;
 }
 
 /* Panel Kontrol */
 .control-panel {
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 30px;
-    margin: 30px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
 }
 
 .relay-control {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-}
-
-.relay {
+    background: #f9f9f9;
+    border: 1px solid #e9e9e9;
+    border-radius: 12px;
+    padding: 20px;
     text-align: center;
-    margin: 20px;
-    min-width: 200px;
+    min-width: 220px;
+    transition: all 0.3s ease;
 }
 
+.relay-control.active {
+    background: #e8f5e9;
+    /* Warna hijau muda saat aktif */
+    border-color: var(--success);
+}
+
+.relay-control h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.relay-control h3 i {
+    margin-right: 10px;
+}
+
+/* Tombol Switch */
 .switch {
     position: relative;
     display: inline-block;
@@ -116,9 +162,7 @@ h1 {
 }
 
 .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+    display: none;
 }
 
 .slider {
@@ -143,48 +187,86 @@ h1 {
     background-color: white;
     transition: .4s;
     border-radius: 50%;
+    box-shadow: 0 2px 4px var(--shadow);
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: var(--success);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(26px);
 }
 
+/* Teks Status ON/OFF */
 .status {
     display: block;
-    margin-top: 10px;
-    font-weight: bold;
+    margin-top: 15px;
     font-size: 1.2rem;
+    font-weight: bold;
 }
 
-/* Status Bar */
+.status.off {
+    color: var(--danger);
+}
+
+.status.on {
+    color: var(--success);
+}
+
+/* Status Bar Bawah */
 .status-bar {
     display: flex;
     justify-content: space-between;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 15px 30px;
-    margin-top: 20px;
-    font-size: 0.9rem;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px 25px;
+    margin-top: 30px;
+    font-size: 1rem;
+    border: 1px solid #e0e0e0;
 }
 
-/* Responsif */
+.connection-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.connection-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--danger);
+    transition: background-color 0.5s ease;
+}
+
+.connection-dot.connected {
+    background-color: var(--success);
+}
+
+.last-update,
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #555;
+}
+
+/* Desain Responsif */
 @media (max-width: 768px) {
-    .sensor-panel {
-        flex-direction: column;
-        align-items: center;
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
-    
-    .sensor-card {
-        width: 80%;
-    }
-    
-    .relay-control {
+
+    .control-panel,
+    .status-bar {
         flex-direction: column;
-        align-items: center;
+        text-align: center;
+        gap: 15px;
+    }
+
+    h1 {
+        font-size: 2rem;
     }
 }
