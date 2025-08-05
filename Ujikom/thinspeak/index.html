@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Agroteknologi IoT - UG MURO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="refresh-indicator">
+        <span id="refreshTimer">Refresh dalam: 5s</span>
+    </div>
+
+    <header class="header">
+        <h1>🌱 Monitoring Agroteknologi IoT</h1>
+        <p>Real-time data from ESP32 and ThingSpeak</p>
+    </header>
+
+    <div class="container">
+        <aside class="left-section">
+            <section class="data-panel">
+                <h2>📊 Data Sensor Real-time</h2>
+
+                <div class="sensor-card">
+                    <div class="sensor-label">
+                        <span class="status-indicator"></span>
+                        🌡️ Suhu Udara
+                    </div>
+                    <div class="sensor-value">
+                        <span id="temperature">--</span>
+                        <span class="sensor-unit">°C</span>
+                    </div>
+                </div>
+
+                <div class="sensor-card">
+                    <div class="sensor-label">
+                        <span class="status-indicator"></span>
+                        💨 Kelembaban Udara
+                    </div>
+                    <div class="sensor-value">
+                        <span id="humidity">--</span>
+                        <span class="sensor-unit">%</span>
+                    </div>
+                </div>
+
+                <div class="sensor-card">
+                    <div class="sensor-label">
+                        <span class="status-indicator"></span>
+                        💧 Kelembaban Tanah
+                    </div>
+                    <div class="sensor-value">
+                        <span id="soilMoisture">--</span>
+                        <span class="sensor-unit">%</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="info-panel">
+                <h3>ℹ️ Info Sistem</h3>
+                <div class="info-item">
+                    <span>Status Koneksi:</span>
+                    <span id="connectionStatus">Menghubungkan...</span>
+                </div>
+                <div class="info-item">
+                    <span>Last Update:</span>
+                    <span id="lastUpdate">--</span>
+                </div>
+                <div class="info-item">
+                    <span>Channel ID:</span>
+                    <span>3018516</span>
+                </div>
+                <div class="info-item">
+                    <span>Sumber Data:</span>
+                    <span id="deviceIP">--</span>
+                </div>
+            </section>
+        </aside>
+
+        <main class="charts-panel">
+            <h2>📈 Grafik ThingSpeak</h2>
+
+            <div class="chart-container">
+                <h3 class="chart-title">🌡️ Grafik Suhu (Field 1)</h3>
+                <iframe
+                    src="https://thingspeak.com/channels/3018516/charts/1?bgcolor=%23ffffff&color=%23d62020&dynamic=true&results=60&type=line&update=15"></iframe>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">💨 Grafik Kelembaban Udara (Field 2)</h3>
+                <iframe
+                    src="https://thingspeak.com/channels/3018516/charts/2?bgcolor=%23ffffff&color=%23ff7f0e&dynamic=true&results=60&type=line&update=15"></iframe>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">💧 Grafik Kelembaban Tanah (Field 3)</h3>
+                <iframe
+                    src="https://thingspeak.com/channels/3018516/charts/3?bgcolor=%23ffffff&color=%232ca02c&dynamic=true&results=60&type=line&update=15"></iframe>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
